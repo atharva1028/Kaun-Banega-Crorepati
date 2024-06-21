@@ -1,0 +1,58 @@
+.article{
+    background-image: url('/Images/kbc.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+.money{
+
+    border-left:5px solid yellow;
+}
+.money div{
+    border-radius: 60px;
+}
+.money-word{
+    border-radius: 1px;
+    padding: 11.25px;
+}
+.section-1{
+    
+    align-items: center;
+    padding-top:100px ;
+}
+.btn-1{
+    border: 5px solid yellow !important;
+    border-radius: 100px;
+    min-height: 100px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.4);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    font-size: x-large;
+    font-style: normal;
+    /* font-family: ui-rounded; */
+    font-weight: 900;
+}
+
+.question{
+    border: 5px solid yellow;
+    border-radius: 100px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.4);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    font-size: x-large;
+    font-style: normal;
+    font-weight: 900;
+    color: black;
+}
+
+.btn-remove {
+    background-image: url('Images/5050.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 20px;
+
+}
