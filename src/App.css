@@ -49,7 +49,7 @@
 }
 
 .btn-remove {
-    background-image: url('Images/5050.png');
+    background-image: url('/Images/5050.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
