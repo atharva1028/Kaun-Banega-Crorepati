@@ -141,7 +141,7 @@ const App = () => {
         {/* First Column */}
         <div className="col-md-10 col-12 section-1">
           <div className='d-flex justify-content-end me-4 pb-2'>
-          <button className="btn btn-remove btn-primary" onClick={handleRemoveTwoWrongAnswers} disabled={lifelineUsed}></button>
+          <button className="btn btn-remove " onClick={handleRemoveTwoWrongAnswers} disabled={lifelineUsed}></button>
           </div>
           
           <div className="p-3 question">
