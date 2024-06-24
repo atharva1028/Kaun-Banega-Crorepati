@@ -56,6 +56,19 @@ const App = () => {
     }
   ];
 
+  const swapQuestions = [
+    {
+      question: "What is the smallest planet in our solar system?",
+      options: ["Mars", "Venus", "Mercury", "Pluto"],
+      answer: "Mercury"
+    },
+    {
+      question: "What is the capital of Australia?",
+      options: ["Sydney", "Canberra", "Melbourne", "Brisbane"],
+      answer: "Canberra"
+    }
+  ];
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(4882);
   const initialColors = ['#321848', '#321848', '#321848', '#321848', '#321848', '#321848', '#321848', '#321848', '#321848', '#321848'];
@@ -66,6 +79,12 @@ const App = () => {
   const [showModal, setShowModal] = useState(false);
   const [removedOptions, setRemovedOptions] = useState([]);
   const [lifelineUsed, setLifelineUsed] = useState(false);
+  const [extraChanceUsed, setExtraChanceUsed] = useState(false);
+  const [extraChanceActive, setExtraChanceActive] = useState(false);
+  const [showExpertModal, setShowExpertModal] = useState(false);
+  const [askExpertUsed, setAskExpertUsed] = useState(false);
+  const [swapUsed, setSwapUsed] = useState(false);
+  const [swapQuestion, setSwapQuestion] = useState(null);
   var a = 10000000;
 
   useEffect(() => {
@@ -92,6 +111,8 @@ const App = () => {
       setTimer(60);
       setScore(score * 2);
       setRemovedOptions([]);
+      setExtraChanceActive(false);
+      setSwapQuestion(null);
     } else {
       const nextIndex = colors.lastIndexOf('#321848');
       const newColors = [...colors];
@@ -105,8 +126,9 @@ const App = () => {
   };
 
   const handleAnswerOptionClick = (selectedOption) => {
-    if (selectedOption === questions[currentQuestion].answer) {
-      setScore(a * 2);
+    const currentQ = swapQuestion || questions[currentQuestion];
+    if (selectedOption === currentQ.answer) {
+      setScore(score * 2);
       const nextIndex = colors.lastIndexOf('#321848');
       if (nextIndex !== -1) {
         const newColors = [...colors];
@@ -115,7 +137,12 @@ const App = () => {
         handleNextQuestion();
       }
     } else {
-      handleGameOver(currentQuestion === 0 ? score * 0 : score);
+      if (extraChanceActive) {
+        setRemovedOptions([...removedOptions, selectedOption]);
+        setExtraChanceActive(false);
+      } else {
+        handleGameOver(currentQuestion === 0 ? score * 0 : score);
+      }
     }
   };
 
@@ -126,12 +153,40 @@ const App = () => {
 
   const handleRemoveTwoWrongAnswers = () => {
     if (!lifelineUsed) {
-      const incorrectOptions = questions[currentQuestion].options.filter(
-        (option) => option !== questions[currentQuestion].answer
+      const currentQ = swapQuestion || questions[currentQuestion];
+      const incorrectOptions = currentQ.options.filter(
+        (option) => option !== currentQ.answer
       );
       const optionsToRemove = incorrectOptions.sort(() => 0.5 - Math.random()).slice(0, 2);
       setRemovedOptions(optionsToRemove);
       setLifelineUsed(true);
+    }
+  };
+
+  const handleExtraChance = () => {
+    if (!extraChanceUsed) {
+      setExtraChanceUsed(true);
+      setExtraChanceActive(true);
+    }
+  };
+
+  const handleAskExpert = () => {
+    if (!askExpertUsed) {
+      setShowExpertModal(true);
+      setAskExpertUsed(true);
+    }
+  };
+
+  const handleCloseExpertModal = () => {
+    setShowExpertModal(false);
+  };
+
+  const handleSwapQuestion = () => {
+    if (!swapUsed && swapQuestions.length > 0) {
+      setSwapQuestion(swapQuestions[0]);
+      setSwapUsed(true);
+      setRemovedOptions([]);
+      setExtraChanceActive(false);
     }
   };
 
@@ -140,12 +195,15 @@ const App = () => {
       <div className="row">
         {/* First Column */}
         <div className="col-md-10 col-12 section-1">
-          <div className='d-flex justify-content-end me-4 pb-2'>
-          <button className="btn btn-remove " onClick={handleRemoveTwoWrongAnswers} disabled={lifelineUsed}></button>
+          <div className='d-flex justify-content-end gap-3 me-4 pb-2'>
+            <button className="btn btn-remove" onClick={handleRemoveTwoWrongAnswers} disabled={lifelineUsed}></button>
+            <button className="btn btn-lifeline" onClick={handleExtraChance} disabled={extraChanceUsed}></button>
+            <button className="btn btn-lifeline-2" onClick={handleAskExpert} disabled={askExpertUsed}></button>
+            <button className="btn btn-lifeline-3" onClick={handleSwapQuestion} disabled={swapUsed}></button>
           </div>
-          
+
           <div className="p-3 question">
-            {questNo} <span>)</span> {questions[currentQuestion].question}
+            {questNo} <span>)</span> {(swapQuestion || questions[currentQuestion]).question}
             
             <div className="float-end ">
             
@@ -156,33 +214,33 @@ const App = () => {
             <div className="col-md-6 col-12 pt-3 mb-3">
               <button
                 className="btn btn-1 btn-light w-100"
-                onClick={() => handleAnswerOptionClick(questions[currentQuestion].options[0])}
-                disabled={removedOptions.includes(questions[currentQuestion].options[0])}
+                onClick={() => handleAnswerOptionClick((swapQuestion || questions[currentQuestion]).options[0])}
+                disabled={removedOptions.includes((swapQuestion || questions[currentQuestion]).options[0])}
               >
-                {!removedOptions.includes(questions[currentQuestion].options[0]) && questions[currentQuestion].options[0]}
+                {!removedOptions.includes((swapQuestion || questions[currentQuestion]).options[0]) && (swapQuestion || questions[currentQuestion]).options[0]}
               </button>
               <button
                 className="btn btn-1 btn-light w-100 mt-4"
-                onClick={() => handleAnswerOptionClick(questions[currentQuestion].options[1])}
-                disabled={removedOptions.includes(questions[currentQuestion].options[1])}
+                onClick={() => handleAnswerOptionClick((swapQuestion || questions[currentQuestion]).options[1])}
+                disabled={removedOptions.includes((swapQuestion || questions[currentQuestion]).options[1])}
               >
-                {!removedOptions.includes(questions[currentQuestion].options[1]) && questions[currentQuestion].options[1]}
+                {!removedOptions.includes((swapQuestion || questions[currentQuestion]).options[1]) && (swapQuestion || questions[currentQuestion]).options[1]}
               </button>
             </div>
             <div className="col-md-6 col-12 mb-3">
               <button
                 className="btn btn-1 btn-light w-100 mt-3"
-                onClick={() => handleAnswerOptionClick(questions[currentQuestion].options[2])}
-                disabled={removedOptions.includes(questions[currentQuestion].options[2])}
+                onClick={() => handleAnswerOptionClick((swapQuestion || questions[currentQuestion]).options[2])}
+                disabled={removedOptions.includes((swapQuestion || questions[currentQuestion]).options[2])}
               >
-                {!removedOptions.includes(questions[currentQuestion].options[2]) && questions[currentQuestion].options[2]}
+                {!removedOptions.includes((swapQuestion || questions[currentQuestion]).options[2]) && (swapQuestion || questions[currentQuestion]).options[2]}
               </button>
               <button
                 className="btn btn-1 btn-light w-100 mt-4"
-                onClick={() => handleAnswerOptionClick(questions[currentQuestion].options[3])}
-                disabled={removedOptions.includes(questions[currentQuestion].options[3])}
+                onClick={() => handleAnswerOptionClick((swapQuestion || questions[currentQuestion]).options[3])}
+                disabled={removedOptions.includes((swapQuestion || questions[currentQuestion]).options[3])}
               >
-                {!removedOptions.includes(questions[currentQuestion].options[3]) && questions[currentQuestion].options[3]}
+                {!removedOptions.includes((swapQuestion || questions[currentQuestion]).options[3]) && (swapQuestion || questions[currentQuestion]).options[3]}
               </button>
             </div>
           </div>
@@ -204,7 +262,7 @@ const App = () => {
 
       <div className="row justify-content-center mt-3"></div>
 
-      {/* Bootstrap Modal */}
+      {/* Game Over Modal */}
       <div className={`modal fade ${showModal ? 'show' : ''}`} style={{ display: showModal ? 'block' : 'none' }}>
         <div className="modal-dialog">
           <div className="modal-content">
@@ -216,6 +274,24 @@ const App = () => {
             </div>
             <div className="modal-footer">
               <button type="button" className="btn w-100 btn-primary" onClick={handleCloseModal}>Play Again</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Ask the Expert Modal */}
+      <div className={`modal fade ${showExpertModal ? 'show' : ''}`} style={{ display: showExpertModal ? 'block' : 'none' }}>
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Expert's Advice</h5>
+              <button type="button" className="btn-close" onClick={handleCloseExpertModal}></button>
+            </div>
+            <div className="modal-body">
+              <p>The correct answer is: {(swapQuestion || questions[currentQuestion]).answer}</p>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn w-100 btn-primary" onClick={handleCloseExpertModal}>Close</button>
             </div>
           </div>
         </div>

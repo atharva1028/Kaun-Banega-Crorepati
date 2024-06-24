@@ -54,5 +54,29 @@
     background-repeat: no-repeat;
     background-size: cover;
     padding: 20px;
-
+    width: 50px;
+}
+.btn-lifeline  {
+    background-image: url('/Images/2x.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 20px;
+    width: 50px;
+}
+.btn-lifeline-2  {
+    background-image: url('/Images/expert.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 20px;
+    width: 50px;
+}
+.btn-lifeline-3  {
+    background-image: url('/Images/flip.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 20px;
+    width: 50px;
 }
